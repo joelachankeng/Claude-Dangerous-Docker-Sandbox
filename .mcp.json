@@ -4,8 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@playwright/mcp@latest",
-        "--browser", "chromium",
+        "@playwright/mcp@0.0.75",
         "--no-sandbox"
       ]
     }

@@ -3,6 +3,9 @@ FROM node:22-bookworm-slim
 ARG TZ=Etc/UTC
 ENV TZ=$TZ
 
+# @playwright/mcp version — keep in sync with .mcp.json
+ARG PLAYWRIGHT_MCP_VERSION=0.0.75
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git curl ca-certificates sudo less procps jq ripgrep nano vim \
     openssh-client gnupg dnsutils iputils-ping \
@@ -16,10 +19,10 @@ USER node
 WORKDIR /workspace
 
 RUN mkdir -p /home/node/.npm-global /home/node/.cache/ms-playwright /home/node/.claude \
- && npm install -g @anthropic-ai/claude-code @playwright/mcp
+ && npm install -g @anthropic-ai/claude-code @playwright/mcp@${PLAYWRIGHT_MCP_VERSION}
 
 USER root
-RUN npx -y playwright install --with-deps chromium chrome \
+RUN npx -y playwright install --with-deps chrome \
  && chown -R node:node /home/node/.cache/ms-playwright
 
 USER node
