@@ -11,6 +11,14 @@ if not exist ".env" (
   exit /b 1
 )
 
+if not exist ".claude-sessions" goto no_restore
+echo.
+choice /c YN /m "Backed-up sessions found in .claude-sessions. Restore them into the container"
+if errorlevel 2 goto no_restore
+call restore-sessions.cmd
+exit /b 0
+:no_restore
+
 docker info >nul 2>&1
 if not errorlevel 1 goto docker_ok
 echo Docker is not running. Starting Docker Desktop...

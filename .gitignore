@@ -1,4 +1,5 @@
 .env
 .claude/
+.claude-sessions/
 node_modules/
 *.log

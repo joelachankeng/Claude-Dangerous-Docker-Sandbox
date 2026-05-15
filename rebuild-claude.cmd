@@ -32,6 +32,13 @@ powershell -NoProfile -Command "while ($true) { docker info *> $null; if ($LASTE
 :docker_ok
 
 echo.
+choice /c YN /m "Keep your sessions (back them up to .claude-sessions before deleting)"
+if errorlevel 2 goto skip_sessions
+echo Backing up sessions to .claude-sessions ...
+docker compose run --rm claude bash -lc "mkdir -p /workspace/.claude-sessions; cd /home/node/.claude 2>/dev/null && for s in projects sessions session-env history.jsonl; do [ -e $s ] && cp -r $s /workspace/.claude-sessions/; done; echo Sessions backed up."
+:skip_sessions
+
+echo.
 echo [1/3] Removing containers and volumes...
 docker compose down -v
 
