@@ -1,0 +1,24 @@
+services:
+  claude:
+    build: .
+    image: claude-dangerous:latest
+    container_name: claude-dangerous
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - claude-config:/home/node/.claude
+      - claude-cache:/home/node/.cache
+    environment:
+      - DISPLAY=host.docker.internal:0.0
+      - LIBGL_ALWAYS_INDIRECT=1
+      - TERM=xterm-256color
+      - CLAUDE_CODE_OAUTH_TOKEN=${CLAUDE_CODE_OAUTH_TOKEN:-}
+    stdin_open: true
+    tty: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: claude --dangerously-skip-permissions
+
+volumes:
+  claude-config:
+  claude-cache:
