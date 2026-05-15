@@ -47,7 +47,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo Done. Run start-claude.cmd to launch Claude.
+echo Done. Run start-claude-dangerously.cmd or start-claude-normal.cmd to launch Claude.
 pause
 endlocal
 exit /b 0
