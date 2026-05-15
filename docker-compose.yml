@@ -2,7 +2,6 @@ services:
   claude:
     build: .
     image: claude-dangerous:latest
-    container_name: claude-dangerous
     working_dir: /workspace
     volumes:
       - .:/workspace
