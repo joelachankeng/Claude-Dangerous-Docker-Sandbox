@@ -39,7 +39,7 @@ I want that hands-off autonomy without giving Claude — or anything it download
 - Bundles Playwright MCP with a real Chrome browser, forwarded to the Windows desktop through an X server so you can watch the automation happen.
 - Persists your login with a long-lived token, so Claude never asks you to sign in again.
 - Includes double-click `.cmd` scripts to install VcXsrv, start the container, and rebuild it from scratch.
-- Backs up your conversation sessions before a rebuild and restores them afterward, so a clean rebuild does not lose your history.
+- Backs up and restores your conversation sessions on demand, so a clean rebuild does not lose your history.
 - Clone the folder to get a fresh sandbox for any new project — and run as many of them at once as you want.
 
 ## Tech
@@ -117,12 +117,13 @@ VcXsrv must be running before you start Claude. The start scripts warn you if it
 
 ## Scripts
 
-The project ships with five Windows batch files. Double-click any of them.
+The project ships with six Windows batch files. Double-click any of them.
 
 - **`install-vcxsrv.cmd`** — Installs VcXsrv through winget. You only need this once, during setup.
 - **`start-claude-dangerously.cmd`** — Launches Claude with `--dangerously-skip-permissions`, so it never stops to ask before editing files or running commands. Starts Docker Desktop and builds the image first if needed.
 - **`start-claude-normal.cmd`** — Launches Claude in normal mode, where it asks for approval before editing files or running commands. Same Docker and image checks as the dangerous script.
-- **`rebuild-claude.cmd`** — Deletes this project's container, volumes, and image, then rebuilds the image from scratch with `--no-cache`. It asks for confirmation first, and offers to back up your sessions before wiping. Use it for a clean slate when something breaks.
+- **`rebuild-claude.cmd`** — Deletes this project's container, volumes, and image, then rebuilds the image from scratch with `--no-cache`. It asks for confirmation first, offers to back up your sessions, and pauses for you to verify that backup before anything is deleted. Use it for a clean slate when something breaks.
+- **`extract-sessions.cmd`** — Copies your sessions out of the container into `.claude-sessions` at any time, without rebuilding. See [Sessions](#sessions) below.
 - **`restore-sessions.cmd`** — Copies sessions saved in `.claude-sessions` back into the container and puts a resume prompt on your clipboard. See [Sessions](#sessions) below.
 
 To start Claude without a script, run it from the project folder: `docker compose run --rm claude` for dangerous mode, or `docker compose run --rm claude claude` for normal mode.
@@ -131,7 +132,7 @@ To start Claude without a script, run it from the project folder: `docker compos
 
 Your conversations are stored inside the container's `claude-config` volume, so they survive a normal restart. But `rebuild-claude.cmd` deletes that volume — which would wipe your history. This feature keeps it safe across a rebuild.
 
-- **Back up** — `rebuild-claude.cmd` asks whether to keep your sessions before it wipes anything. Choose yes and it copies them to a `.claude-sessions` folder in the project.
+- **Back up** — run `extract-sessions.cmd` anytime to copy your sessions out of the container into a `.claude-sessions` folder. `rebuild-claude.cmd` also offers to do this automatically — and lets you verify the backup — before it wipes anything.
 - **Restore** — `restore-sessions.cmd` copies `.claude-sessions` back into the container's volume. The two `start-claude-*.cmd` scripts also detect `.claude-sessions` on launch and offer to run the restore for you.
 - **Resume** — Claude's built-in `--resume` may not list a restored session. So `restore-sessions.cmd` also puts a ready-made prompt on your clipboard: start Claude, paste it in, and Claude reads the old transcript and continues from where you left off.
 
