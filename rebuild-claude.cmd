@@ -36,6 +36,14 @@ choice /c YN /m "Keep your sessions (back them up to .claude-sessions before del
 if errorlevel 2 goto skip_sessions
 echo Backing up sessions to .claude-sessions ...
 docker compose run --rm claude bash -lc "mkdir -p /workspace/.claude-sessions; cd /home/node/.claude 2>/dev/null && for s in projects sessions session-env history.jsonl; do [ -e $s ] && cp -r $s /workspace/.claude-sessions/; done; echo Sessions backed up."
+echo.
+echo Your sessions were copied to the .claude-sessions folder, now opening it.
+start "" ".claude-sessions"
+echo Check that folder and confirm your sessions are actually there.
+echo If it looks empty or wrong, choose No below - nothing has been deleted yet.
+echo.
+choice /c YN /m "Sessions verified - continue with the rebuild"
+if errorlevel 2 goto cancelled
 :skip_sessions
 
 echo.
