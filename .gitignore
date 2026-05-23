@@ -1,5 +1,5 @@
 .env
-.claude/
+.claude/settings.local.json
 .claude-sessions/
 node_modules/
 *.log
